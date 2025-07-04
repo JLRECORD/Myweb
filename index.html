@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reproductor de Canción</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .player-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .cover {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .info {
+      padding: 20px 15px 10px;
+    }
+
+    .info h2 {
+      margin: 10px 0 5px;
+      font-size: 20px;
+      color: #111;
+    }
+
+    .info p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    audio {
+      width: 90%;
+      margin-top: 20px;
+      outline: none;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-container">
+    <img id="coverImage" class="cover" src="" alt="Portada">
+    <div class="info">
+      <h2 id="artistName">Artista</h2>
+      <p id="originalSong">Canción original</p>
+      <p id="songId">ID</p>
+    </div>
+    <audio id="audioPlayer" controls></audio>
+    <div id="errorMsg" class="error"></div>
+  </div>
+
+  <script>
+    const GITHUB_USER = "JLRECOR";
+
+    const $ = id => document.getElementById(id);
+
+    function getParams() {
+      const params = {};
+      const query = new URLSearchParams(window.location.search);
+      for (const [key, value] of query.entries()) {
+        params[key] = decodeURIComponent(value);
+      }
+      return params;
+    }
+
+    function initPlayer() {
+      const params = getParams();
+      const { web, repo, song, artist, original, photo, id } = params;
+
+      if (!web || !repo || !song || !artist || !original || !photo || !id) {
+        $("errorMsg").textContent = "⚠️ Faltan parámetros en el link. Verifica que esté completo.";
+        return;
+      }
+
+      const audioURL = `https://cdn.jsdelivr.net/gh/${GITHUB_USER}/${web}/${repo}/${song}`;
+      $("audioPlayer").src = audioURL;
+      $("coverImage").src = photo;
+      $("artistName").textContent = artist;
+      $("originalSong").textContent = `Canción original: ${original}`;
+      $("songId").textContent = `ID: ${id}`;
+
+      // Intentar reproducir automáticamente
+      $("audioPlayer").play().catch(() => {
+        console.warn("El navegador bloqueó la reproducción automática.");
+      });
+    }
+
+    initPlayer();
+  </script>
+</body>
+</html>
