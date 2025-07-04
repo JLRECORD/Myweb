@@ -93,7 +93,7 @@
       const params = getParams();
       const { web, repo, song, artist, original, photo, id } = params;
 
-      if (!web || !repo || !song || !artist || !original || !photo || !id) {
+      if (!repo || !song || !artist || !original || !photo || !id) {
         $("errorMsg").textContent = "⚠️ Faltan parámetros en el link. Verifica que esté completo.";
         return;
       }
